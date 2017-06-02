@@ -21,3 +21,5 @@ handbook of biostatistic and R
 
 知识离不开共享和编辑，欢迎进行补充和必要的修正！！
 源文件用markdown编辑，md文档关于数学公式使用的是LeTex语法，所以有的编辑器可能（比如github）不支持。
+
+**推荐使用Typora进行相应的文档编辑。**
