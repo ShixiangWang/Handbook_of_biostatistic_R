@@ -76,7 +76,7 @@ $$
 
 概率相关的基本概念大都不难，理解即可。需要注意的是贝叶斯公式，它在当今各大领域都非常常用，值得深挖。
 
-![beyesi](beyesi.png)
+![beyesi](./pic/beyesi.png)
 
 常见概率分布统计书上都有详细介绍，用的时候查询即可。
 
@@ -137,13 +137,13 @@ $$
 
 如果总体方差已知，使用z分布（标准正态分布）进行计算
 
-![1-sample1](1-sample1.png)
+![1-sample1](./pic/1-sample1.png)
 
 **总体方差未知时对总体均值进行检验**
 
 如果总体方差未知，使用t分布进行计算
 
-![1-sample2](1-sample2.png)
+![1-sample2](./pic/1-sample2.png)
 
 计算时根据要求，算出z值或者t值，然后与置信度（t分布需要看自由度）下的z（或t）统计量进行对比。观察是在否定区间还是接受区间，从而完成对假设的推断。
 
@@ -153,7 +153,7 @@ $$
 
 以下是常用的概率函数
 
-![distribution](distribution.png)
+![distribution](./pic/distribution.png)
 
 它的使用概率函数形如：`[dpqr] distribution_abbreviation()`
 
@@ -194,7 +194,7 @@ One sample parametric test usually assumes that samples are randomly selected fr
 
 由此引申出几个公式概念，包括灵敏度、特异性、假阳性率等，它们的计算方式如下：
 
-![fr](fr.png)
+![fr](./pic/fr.png)
 
 这些概念常用来计算ROC曲线，该曲线在评判模型的有效性中非常流行。
 
@@ -208,9 +208,9 @@ AUC则是指ROC曲线下方围成的面积，数值越大，分类器（模型�
 
 **统计检验的功效计算**（分别使用与正态分布、t分布与样本频率检验）
 
-![power1](power1.png)
+![power1](./pic/power1.png)
 
-![power2](power2.png)
+![power2](./pic/power2.png)
 
 效应值： $\frac{|\mu_0 - \mu_1|}{\sigma}$，表示两个总体的平均值差异
 
@@ -229,13 +229,13 @@ AUC则是指ROC曲线下方围成的面积，数值越大，分类器（模型�
 
 功效分析使用到的一些函数和包可以参考[R语言中的功效分析](https://moiedotblog.wordpress.com/2017/04/29/r%e8%af%ad%e8%a8%80%e4%b8%ad%e7%9a%84%e5%8a%9f%e6%95%88%e5%88%86%e6%9e%90/)。
 
-![pwr](pwr.png)
+![pwr](./pic/pwr.png)
 
 
 
 ### 两样本参数检验
 
-![two-sample](two-sample.png)
+![two-sample](./pic/two-sample.png)
 
 图中$\delta=|\mu_1-\mu_2|$
 
@@ -255,7 +255,7 @@ AUC则是指ROC曲线下方围成的面积，数值越大，分类器（模型�
 
 下表汇出了对总体均值进行检验时，参数和非参数的常用检验对比。
 
-![non-para](non-para.png)
+![non-para](./pic/non-para.png)
 
 符号检验与秩和检验两种方法相比较，符号检验只考虑样本差数的符号；秩和检验考虑样本差数的符号和样本差数的顺序。
 
@@ -286,9 +286,9 @@ AUC则是指ROC曲线下方围成的面积，数值越大，分类器（模型�
 
 **FDR计算**
 
-![fdr1](fdr1.png)
+![fdr1](./pic/fdr1.png)
 
-![fdr_eg](fdr_eg.png)
+![fdr_eg](./pic/fdr_eg.png)
 
 
 
@@ -298,11 +298,11 @@ AUC则是指ROC曲线下方围成的面积，数值越大，分类器（模型�
 
 分析流程：
 
-![anova1](anova1.png)
+![anova1](./pic/anova1.png)
 
 形成列联表
 
-![anova2](anova2.png)
+![anova2](./pic/anova2.png)
 
 课件8中有一个step-by-step ANOVA按步骤进行单因素方差分析计算。
 
@@ -320,23 +320,23 @@ R一个非常好用的函数是`TukeyHSD()`。检测方差同质性则使用`bar
 
 不同的模型在平方和和自由度的计算是相同的，但是假设检验时F值得计算公式是不同的。模型分析的侧重点也不同。对于单因素方差分析来说，固定模型与随机模型无多大区别。
 
-![random_fix1](random_fix1.png)
+![random_fix1](./pic/random_fix1.png)
 
-![random_fix2](random_fix2.png)
+![random_fix2](./pic/random_fix2.png)
 
 ### 非参数检验
 
 与t检验类似，方差分析中面对方差不同质或者所处理的数据是有序性而不是数值型时无能为力。因此需要相应的非参数检验来解决这样一类问题。Kruskal-Walls test就是为这个目的开发的。它就像多重样本（multiple-sample）版本的Wilcoxon秩和检验一样。
 
-![kw_test1](kw_test1.png)
+![kw_test1](./pic/kw_test1.png)
 
-![kw_test2](kw_test2.png)
+![kw_test2](./pic/kw_test2.png)
 
 下面截一个实例（对于前面的公式看，比较容易理解）。
 
-![kw_ex1](kw_ex1.png)
+![kw_ex1](./pic/kw_ex1.png)
 
-![kw_ex2](kw_ex2.png)
+![kw_ex2](./pic/kw_ex2.png)
 
 在R中，使用函数`kruskal.test()`即可用进行K-W检验。
 
@@ -350,59 +350,59 @@ R一个非常好用的函数是`TukeyHSD()`。检测方差同质性则使用`bar
 
 说实话，这个理解不难，手工计算就比较麻烦了。在R中使用函数加上公式可以很容易地表达因变量和自变量的关系，从而完成方差分析。
 
-![aov](aov.png)
+![aov](./pic/aov.png)
 
 下面只截取相应的公式（分随机和固定效应模型）
 
 #### 两因素重复测量方差分析
 
-![twr1](twr1.png)
+![twr1](./pic/twr1.png)
 
 
 
-![twr2](twr2.png)
+![twr2](./pic/twr2.png)
 
-![twr3](twr3.png)
+![twr3](./pic/twr3.png)
 
-![twr4](twr4.png)
+![twr4](./pic/twr4.png)
 
 
 
-![twr5](twr5.png)
+![twr5](./pic/twr5.png)
 
 如果存在显著性差异，在R中使用`TukeyHSD()`函数计算两两之间的显著性。
 
 #### 无重复测量两因素方差分析
 
-![nda1](nda1.png)
+![nda1](./pic/nda1.png)
 
 这个其实相当于重复测量的简化版了。少了一个假设条件，之前的公式同样适用但是没有了多个测量值计算平均数等一些计算。
 
 ### 随机效应模型的两因素方差分析
 
-![nda2](nda2.png)
+![nda2](./pic/nda2.png)
 
-![nda3](nda3.png)
+![nda3](./pic/nda3.png)
 
 
 
 ### 混合模型的两因素方差分析
 
-![nda4](nda4.png)
+![nda4](./pic/nda4.png)
 
 
 
 ### 小结
 
-![nda5](nda5.png)
+![nda5](./pic/nda5.png)
 
-也许方差分析中涉及到的公式略显复杂，计算难度也有很大提升。但是就一个使用者而言，应当理解它的基本内涵和适用范围：它是利用F检验对两个或者两个以上样本的参数检验手段，需要同t检验（可能相对的非参数检验）结合使用；从而完成从多个样本中探寻某些因素对于两个样本之间的影响的过程。它的分析流程如下：![aov2](aov2.png)
+也许方差分析中涉及到的公式略显复杂，计算难度也有很大提升。但是就一个使用者而言，应当理解它的基本内涵和适用范围：它是利用F检验对两个或者两个以上样本的参数检验手段，需要同t检验（可能相对的非参数检验）结合使用；从而完成从多个样本中探寻某些因素对于两个样本之间的影响的过程。它的分析流程如下：![aov2](./pic/aov2.png)
 
 ### 缺失值处理
 
 这里涉及一些方法和相应的R包，估计需要时查看说明。
 
-![na1](na1.png)
+![na1](./pic/na1.png)
 
-![na2](na2.png)
+![na2](./pic/na2.png)
 
