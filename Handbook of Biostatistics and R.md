@@ -155,7 +155,7 @@ $$
 
 当检验是单边时，上述公式的$1-\alpha/2$变成$1-\alpha$
 
-在R中，统计量与分布的计算和图形的绘制可能涉及到的一些函数的使用，可以参考[数值与字符处理函数](http://www.jianshu.com/p/259a1ed171a4)，[基本图形绘制](https://moiedotblog.wordpress.com/2017/04/29/%e5%9f%ba%e6%9c%ac%e7%bb%9f%e8%ae%a1%e5%88%86%e6%9e%90/)。
+在R中，统计量与分布的计算和图形的绘制可能涉及到的一些函数的使用，可以参考[数值与字符处理函数](http://www.jianshu.com/p/259a1ed171a4)，[基本统计分析](https://moiedotblog.wordpress.com/2017/04/29/%e5%9f%ba%e6%9c%ac%e7%bb%9f%e8%ae%a1%e5%88%86%e6%9e%90/)，[基本图形绘制](https://moiedotblog.wordpress.com/2017/04/29/%e4%bd%bf%e7%94%a8r%e7%bb%98%e5%88%b6%e5%9f%ba%e6%9c%ac%e5%9b%be%e5%bd%a2/)。
 
 以下是常用的概率函数
 
