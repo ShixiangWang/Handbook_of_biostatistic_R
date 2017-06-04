@@ -1,28 +1,15 @@
-# Handbook_of_biostatistic_R
-handbook of biostatistic and R
+# 生物统计学与R手札介绍
+## 文档介绍
 
-**作者： 王诗翔**
+该文档是生物统计学知识与相应R应用的手札，整合了生物统计学老师课件、网络博文资源以及部分个人见解。它既不是全面介绍生物统计学知识及原理、公式推导的专业书籍，也是不介绍R语言编程、操作原理的手册。
 
-这个项目是对生物统计学以及相关R函数应用的整理和总结。
+它适用于在有基本概率知识结构的基础上，回顾和把控生物统计学的基本知识脉络，以及了解如何用R做相应的分析。具体的实战应当参考文档中提供的参考链接或专业手册。
 
-**想要获取良好的体验，请下载pdf或者html版本（需要将相应图片文件也下载，相对路径保持一致）。**
-
-文本内容预览：
-
-![pre-view2](pre-view2.png)
-
-![pre-view1](pre-view1.png)
+## 下载
 
 
 
 
-欢迎加入项目
-===
 
-**如果你对这个项目的内容和编辑感兴趣：**
 
-知识离不开共享和编辑，欢迎进行补充和必要的修正！！
-源文件用markdown编辑，为同路径下的[Handbook of Biostatistics and R.md](https://github.com/ShixiangWang/Handbook_of_biostatistic_R/blob/master/Handbook%20of%20Biostatistics%20and%20R.md)文件。文档中关于数学公式使用的是LeTex语法，所以有的编辑器可能（比如github）不支持。
-
-**推荐使用[Typora](https://typora.io/)进行相应的文档编辑。**
 

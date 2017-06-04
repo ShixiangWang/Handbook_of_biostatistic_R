@@ -1,6 +1,8 @@
 # 生物统计学与R手札
 
-[TOC]
+作者：王诗翔
+
+更新日期： 06-05-2017
 
 ## 目录
 
@@ -30,14 +32,17 @@
   * [多元线性回归](#多元线性回归)
   * [逻辑回归](#逻辑回归)
   * [偏相关与多重相关](#部分相关与多重相关)
-
 * [基因表达与富集分析](#基因表达与富集分析)
   * [差异表达基因分析](#差异表达基因分析)
   * [富集分析](#富集分析)
 * [PCA与聚类分析](#PCA与聚类分析)
   * [PCA](#PCA)
   * [聚类分析](#聚类分析)
-  * ​
+* [生存分析](#生存分析)
+
+
+
+如果是初次阅读本文档，请先查看该文档的[介绍说明](https://github.com/ShixiangWang/Handbook_of_biostatistic_R)。
 
 ## Introduction
 
@@ -1092,6 +1097,8 @@ R的基础安装包中提供了PCA的函数，为`princomp()`。重点掌握`psy
 
 ### 聚类分析
 
+聚类分析指南：<http://home.deib.polimi.it/matteucc/Clustering/tutorial_html/index.html>
+
 聚类，指将样本分到不同的组中，使得同一组中的样本差异尽可能的小，而不同组中的样本差异尽可能的大。
 
 **聚类分析**是一种数据归约技术，旨在揭露一个数据集中观测值的子集。它可以把大量的观测值归约为若干类。这里的类被定义为若干个观测值组成的群组，群组内观测值的相似度比群间相似度高。这不是一个精确的定义，从而导致了各种方法的出现。
@@ -1118,7 +1125,7 @@ R的基础安装包中提供了PCA的函数，为`princomp()`。重点掌握`psy
 - 最大化类中的相似性
 - 最小化类间的相似性
 
-#### 聚类分析的一般步骤：
+**聚类分析的一般步骤**：
 
 有效的聚类分析是一个多步骤的过程，这其中每一次决策都可能影响聚类结果的质量和有效性。以下是11个典型的步骤：
 
@@ -1168,11 +1175,334 @@ R中自带的`dist()`函数能够用来计算矩阵或数据框中所有行之�
 
 ![duliang5](pic/duliang5.png)
 
+**混合数据类型的聚类分析**
+
+如果存在其他类型的数据，则需要相异的替代措施，可以使用`cluster`包中的`daisy()`函数来获得包含任意二元、名义、有序、连续属性组合的相异矩阵。`cluster`包中的其他函数可以使用这些异质性来进行聚类分析。例如`agnes()`函数提供了层次聚类，`pam()`函数提供了围绕中心点的划分的方法。
+
 #### 划分聚类
+
+在划分方法中，观测值被分为K组并根据给定的规则改组成最有粘性的类。
+
+##### K均值聚类
+
+最常见的划分方法是K均值聚类分析。算法如下：
+
+1. 选择K个中心点（随机选择K行）;
+2. 把每个数据点分配到离它最近的中心点；
+3. 重新计算每类中的点到该类中心点距离的平均值;
+4. 分配每个数据到它最近的中心点;
+5. 重复步骤3,4直到所有观测值不再被分配或是达到最大的迭代次数（R默认10次）。
+
+这种方法的实施细节可以变化。R软件使用Hartigan & Wong （1979）提出的有效算法，这种算法是把观测值分成K组并使得观测值到其指定的聚类中心的平方的总和为最小。也就是说，在步骤2,4中，每个观测值被分配到使下式得到最小值的那一类中：
+
+表示第i个观测值中第j个变量的值。表示第k类中第j个变量的均值，其中p是变量的个数。
+
+K均值聚类能处理比层次聚类更大的数据集，另外，观测值不会永远被分到一类中。这个方法很有可能被异常值影响。
+
+在R中K均值的函数格式是`kmeans(x, centers)`，这里`x`表示数值数据集（矩阵或数据框），`centers`是要提取的聚类数目。函数返回类的成员、类中心、平方和和类的大小。
+
+`kmeans()`函数有一个`nstart`选项尝试多种初始配置并输出最好的一个。通常推荐使用这种方法。
+
+在数据挖掘中，K-Means算法是一种[cluster analysis](http://en.wikipedia.org/wiki/Cluster_analysis)的算法，其主要是来计算数据聚集的算法，主要通过不断地取离种子点最近均值的算法。
+
+##### 问题
+
+K-Means算法主要解决的问题如下图所示。我们可以看到，在图的左边有一些点，我们用肉眼可以看出来有四个点群，但是我们怎么通过计算机程序找出这几个点群来呢？于是就出现了我们的K-Means算法（[Wikipedia链接](http://en.wikipedia.org/wiki/K-means_clustering)）
+
+![K-Means 要解决的问题](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0Z411NN-0.gif)
+
+**算法概要**
+
+这个算法其实很简单，如下图所示：
+
+![K-Means 算法概要](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/091301K62-1.jpg)
+
+从上图中，我们可以看到，**A，B，C，D，E是五个在图中点。而灰色的点是我们的种子点，也就是我们用来找点群的点**。有两个种子点，所以K=2。
+
+然后，K-Means的算法如下：
+
+1. 随机在图中取K（这里K=2）个种子点。
+2. 然后对图中的所有点求到这K个种子点的距离，假如点Pi离种子点Si最近，那么Pi属于Si点群。（上图中，我们可以看到A，B属于上面的种子点，C，D，E属于下面中部的种子点）
+3. 接下来，我们要移动种子点到属于他的“点群”的中心。（见图上的第三步）
+4. 然后重复第2）和第3）步，直到，种子点没有移动（我们可以看到图中的第四步上面的种子点聚合了A，B，C，下面的种子点聚合了D，E）。
+
+这个算法很简单，但是有些细节我要提一下，求距离的公式我不说了，大家有初中毕业水平的人都应该知道怎么算的。我重点想说一下“求点群中心的算法”。
+
+##### 求点群中心的算法
+
+一般来说，求点群中心点的算法你可以很简的使用各个点的X/Y坐标的平均值。不过，我这里想告诉大家另三个求中心点的的公式：
+
+**1）Minkowski Distance公式——**λ可以随意取值，可以是负数，也可以是正数，或是无穷大。
+
+![Minkowski Distance 公式](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913011622-2.gif)
+
+**2）Euclidean Distance公式**——也就是第一个公式λ=2的情况
+
+![Euclidean Distance 公式](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913012536-3.gif)
+
+**3）CityBlock Distance公式**——也就是第一个公式λ=1的情况
+
+![CityBlock Distance 公式](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913011109-4.gif)
+
+这三个公式的求中心点有一些不一样的地方，我们看下图（对于第一个λ在0-1之间）。
+
+![Minkowski Mean](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913016219-5.jpg)
+
+![Euclidean distance](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913012002-6.jpg)
+
+![Manhattan distance](http://cms.csdnimg.cn/articlev1/uploads/allimg/120703/0913014531-7.jpg)
+
+上面这几个图的大意是他们是怎么个逼近中心的，第一个图以星形的方式，第二个图以同心圆的方式，第三个图以菱形的方式。
+
+##### K-Means++算法
+
+K-Means主要有两个最重大的缺陷——都和初始值有关：
+
+- K是事先给定的，这个K值的选定是非常难以估计的。很多时候，事先并不知道给定的数据集应该分成多少个类别才最合适。（[ISODATA算法](http://en.wikipedia.org/wiki/Multispectral_pattern_recognition)通过类的自动合并和分裂，得到较为合理的类型数目K）
+
+
+- K-Means算法需要用初始随机种子点来搞，这个随机种子点太重要，不同的随机种子点会有得到完全不同的结果。（[K-Means++算法](http://en.wikipedia.org/wiki/K-means%2B%2B)可以用来解决这个问题，其可以有效地选择初始点）
+
+我在这里重点说一下K-Means++算法步骤：
+
+1. 先从我们的数据库随机挑个随机点当“种子点”。
+2. 对于每个点，我们都计算其和最近的一个“种子点”的距离D(x)并保存在一个数组里，然后把这些距离加起来得到Sum(D(x))。
+3. 然后，再取一个随机值，用权重的方式来取计算下一个“种子点”。这个算法的实现是，先取一个能落在Sum(D(x))中的随机值Random，然后用Random -= D(x)，直到其<=0，此时的点就是下一个“种子点”。
+4. 重复第（2）和第（3）步直到所有的K个种子点都被选出来。
+5. 进行K-Means算法。
+
+
+
+##### 围绕中心点的划分
+
+因为K均值聚类是基于均值的，所以它对异常值是敏感的。一个更稳健的方法是围绕中心点的划分（PAM）。与其用质心表示类，不如用一个最有代表性的观测值来表示（称为中心点）。K均值聚类一般使用欧几里得距离，而PAM可以使用任意的距离来计算。因此，PAM可以容纳混合数据类型，并且不仅限于连续变量。
+
+PAM算法如下:
+
+1. 随机选择K个观测值（每个都称为中心点）;
+2. 计算观测值到各个中心的距离/相异性;
+3. 把每个观测值分配到最近的中心点;
+4. 计算每个中心点到每个观测值的距离的总和（总成本）;
+5. 选择一个该类中不是中心的点，并和中心点互换;
+6. 重新把每个点分配到距它最近的中心点;
+7. 再次计算总成本;
+8. 如果总成本比步骤4总成本少，把新的点作为中心点;
+9. 重复5-8直到中心点不再改变。
+
+可以使用`cluster()`包中的`pam()`函数使用基于中心点的划分方法。格式是`pam(x, k, metric="euclidean", stand=FALSE)`，这里的`x`表示数据框或矩阵，`k`表示聚类的个数，`metric`表示使用的相似性/相异性的度量，而`stand`是一个逻辑值，表示是否有变量应该在计算该指标之前被标准化。
+
+下图列出了PAM方法处理葡萄酒的数据。
+
+![img](http://upload-images.jianshu.io/upload_images/3884693-ed6bbd7058511a3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+#### 层次聚类
+
+层次聚类，是一种很直观的算法。顾名思义就是要一层一层地进行聚类，可以从下而上地把小的cluster合并聚集，也可以从上而下地将大的cluster进行分割。层次凝聚的代表是AGNES算法，层次分裂的代表是DIANA算法。似乎一般用得比较多的是从下而上地聚集。
+
+所谓从下而上地合并cluster，具体而言，就是每次找到距离最短的两个cluster，然后进行合并成一个大的cluster，直到全部合并为一个cluster。整个过程就是建立一个树结构，类似于下图。
+
+![img](http://attachbak.dataguru.cn/attachments/portal/201308/30/101335h3te1bxmbk86zeqe.jpg)
+
+算法：
+
+1. 定义每个观测值（行或单元）为一类；
+2. 计算每类和其他各类的距离;
+3. 把距离最短的两类合并成一类，这样类的个数就减少一个;
+4. 重复步骤2,3，直到包含所有观测值的类合并成单个的类为止或者达到设定的最小距离阈值。
+
+在层次聚类算法中，主要区别在于第二步骤对类的定义不同，下表列出五种
+
+| 聚类方法  | 两类之间的距离定义                             |
+| ----- | ------------------------------------- |
+| 单联动   | 一个类中的点和另一个类中的点的最小距离                   |
+| 全联动   | 一个类中的点和另一个类中的点的最大距离                   |
+| 平均联动  | 一个类中的点和另一个类中的点的平均距离（也称为UPGMA，非加权对组平均） |
+| 质心    | 两类中质心（变量均值向量）之间的距离。对于单个观测值来说，质心就是变量的值 |
+| Ward法 | 两个类之间所有变量的方差分析的平方和                    |
+
+层次聚类方法可以用`hclust()`函数来实现，格式
+
+​                        `hclust(d, method=)      d为dist()产生的距离矩阵`
+
+​    `method`包括`single, complete, average, centroid, ward`
+
+例如：
+
+```
+data(nutrient, package = "flexclust")
+row.names(nutrient) <- tolower(row.names(nutrient))
+nutrient.scaled <- scale(nutrient)
+
+d <- dist(nutrient.scaled)
+
+fit.average <- hclust(d, method="average")
+png("Average Link Clustering.png")
+plot(fit.average, hang = -1, cex=.8, main = "Average Linkage Clustering")
+dev.off()
+```
+
+![img](http://upload-images.jianshu.io/upload_images/3884693-d5ef9da4246d3718.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+`hang`命令显示观测值的标签。
+
+树状图应该从下往上读，它展示了这些条目如何被结合成类。每个观测值起初自成一类，然后相聚最近的两类合并。
+
+DIANA (Divisive Analysis)算法最初将所有样本放入一个簇，然后选择一个簇，根据某些准则进行分裂。分裂的过程反复进行直到所有的对象最终满足簇数目。
+
+![diana1](pic/diana1.png)
+
+**具体算法步骤**
+
+
+
+当需要嵌套聚类和有意义的层次结构时，层次聚类或许特别有用。在生物科学中这种情况很常见。在某种意义上分层算法是贪婪的，一旦一个观测值被分配给一个类，它就不能在后面的过程中被重新分配。
+
+![diana2](pic/diana2.png)
 
 
 
 ## 生存分析
 
+生存分析，survival analysis，顾名思义是用来研究个体的存活概率与时间的关系。例如研究病人感染了病毒后，多长时间会死亡；工作的机器多长时间会发生崩溃等。 
+这里“个体的存活”可以推广抽象成某些关注的事件。 所以SA就成了研究某一事件与它的发生时间的联系的方法。这个方法广泛的用在医学、生物学等学科上，近年来也越来越多人用在互联网数据挖掘中，例如用survival analysis去预测信息在社交网络的传播程度，或者去预测用户流失的概率。 R里面有很成熟的SA工具。
 
+![re_vs_as](pic/re_vs_as.png)
+
+相比于logistics regression， survival analysis有个很大的优点是可以处理缺失数据（censored data， 只有个体的部分数据）。比如说医生想研究病人在服药后的健康状况，跟踪期为2015一整年。有些人接近2015年底才开始服药，那么他就只有很短的数据。如果在一年内知道病人死亡了，那么这个病人的数据是完全的；而健康的病人的数据到2015年末就是缺失的了（right censored），因为假如病人在一年后死亡了，我们并不知道这个事。或者说病人在一年内突然失联了，那么他的数据也是缺失。
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316220431881-402103744.png)
+
+
+
+生存分析大致分为三类：
+
+- 非参数法 Non-Parametric survival analysis ：不考虑数据的分布类型；有Kaplan-Meier法和寿命表法。
+- 参数法 Parametric survival analysis ：要知道数据的分布类型。有指数分布法， Weibull分布法，对数正态回归分布法等。
+- 半参数法 Semi-Parametric survival analysis ：具有参数和非参数的特点。如Cox模型法。
+
+生存分析涉及两类输出变量：
+
+- 时间变量
+- 截尾变量
+
+
+
+用T表示事件的发生时刻
+
+**存活函数**：S(t)= Pr(T>t) = 1-F(t) 
+
+表示个体在t时刻还活着的概率，即事件在t时刻还未发生的概率。S(0)=1, S(无穷大) = 0， 并且S(t)是单调非增函数。实际数据中，t通常取离散值，例如天，周等。
+
+**风险函数：**
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316220614974-1263129143.png)
+
+如果每个个体都遵循相同的规律，即个体间没有差异，那么问题比较简单。Kaplan-Meier是一种无参数的模型，它在每个兴趣时间点做一次存活统计，估计存活函数。
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316220813724-1180666864.png)
+
+这种方法学出来的S(t)是不平滑的。 带参数的模型会假设模型服从某个分布，使学得的函数平滑。常用的有：
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316220921912-1631749684.png)
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316220946474-1155929379.png)
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316221015787-1194290848.png)
+
+```R
+install.packages("OIsurv")
+
+library(OIsurv)
+
+data(tongue)
+attach(tongue)
+my.surv<-Surv(time[type==1], delta[type==1])
+my.fit<-survfit(my.surv~1)   #Kaplan-Meier
+summary(my.fit)
+plot(my.fit)
+#比较type=1和type=2这两个组的存活函数
+my.fit1<-survfit(Surv(time,delta)~type)
+plot(my.fit1)
+
+#计算风险函数
+H.hat<--log(my.fit$surv)
+H.hat<-c(H.hat, tail(H.hat,1))
+
+print(my.fit, print.rmean=TRUE)  
+
+#检验两个存活函数是否有区别  
+survdiff(Surv(time, delta) ~ type) # output omitted
+
+detach(tongue)
+```
+
+**Cox proportional hazards model**
+
+![img](http://images2015.cnblogs.com/blog/380470/201603/380470-20160316221337709-365100155.png)
+
+```R
+# cox PH model
+data(burn) 
+attach(burn) 
+my.surv <- Surv(T1, D1)
+coxph.fit <- coxph(my.surv ~ Z1 + as.factor(Z11), method="breslow") 
+detach(burn)
+```
+
+预测新数据的值感觉比较不正规，因为survival analysis本身不是针对预测的：
+
+```
+risk = function(model, newdata, time) {
+  as.numeric(1-summary(survfit(model, newdata = newdata, se.fit = F, conf.int = F), times = time)$surv)
+}
+```
+
+**extended Cox model**
+
+如果Cox PH Model中的变量会随时间变化，那么就成了extended Cox model，此时HR不再是一个常量。很简单的例子，如果病人的居住地也是一个变量，病人有可能会搬家，例如在北京吸霾了5年，再跑去厦门生活，那么他旧病复发的概率肯定会降低。所以住所这个变量是和时间相关的。一种简单的做法是，按照变量改变的时刻，把时间切割成区间，使得每个区间内的变量没有变化。然后再套用Cox PH模型。
+
+```R
+# extended cox 
+data(relapse) 
+N <- dim(relapse)[1]
+t1 <- rep(0, N+sum(!is.na(relapse$int))) # initialize start time at 0
+t2 <- rep(-1, length(t1)) # build vector for end times
+d <- rep(-1, length(t1)) # whether event was censored
+g <- rep(-1, length(t1)) # gender covariate
+i <- rep(FALSE, length(t1)) # initialize intervention at FALSE
+ 
+j <- 1
+for(ii in 1:dim(relapse)[1]){
+    if(is.na(relapse$int[ii])){ # no intervention, copy survival record
+        t2[j] <- relapse$event[ii]
+        d[j] <- relapse$delta[ii]
+        g[j] <- relapse$gender[ii]
+        j <- j+1
+    } else { # intervention, split records
+        g[j+0:1] <- relapse$gender[ii] # gender is same for each time
+        d[j] <- 0 # no relapse observed pre-intervention
+        d[j+1] <- relapse$delta[ii] # relapse occur post-intervention?
+        i[j+1] <- TRUE # intervention covariate, post-intervention
+        t2[j] <- relapse$int[ii]-1 # end of pre-intervention
+        t1[j+1] <- relapse$int[ii]-1 # start of post-intervention
+        t2[j+1] <- relapse$event[ii] # end of post-intervention
+        j <- j+2 # two records added
+    }
+}
+
+mySurv <- Surv(t1, t2, d) # pg 3 discusses left-trunc. right-cens. data
+myCPH <- coxph(mySurv ~ g + i)
+```
+
+以上参考：[survival analysis 生存分析与R](http://www.cnblogs.com/sylvanas2012/p/survival_analysis.html)。
+
+**生存分析中涉及的函数：**
+
+![sur_fun](pic/sur_fun.png)
+
+具体实战和应用可以参考：
+
+[如何用R语言轻松搞定生存分析](http://www.360doc.com/content/17/0111/15/19913717_621781809.shtml)
+
+[用R做生存分析](http://www.dataguru.cn/thread-230939-1-1.html)
 
