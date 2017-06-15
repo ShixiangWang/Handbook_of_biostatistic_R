@@ -6,12 +6,18 @@
 
 下载
 =================
-文档下载链接：[生统与R手札](https://github.com/ShixiangWang/Handbook_of_biostatistic_R/releases/tag/1.2)
+文档下载链接：[生统与R手札_v1.2](https://github.com/ShixiangWang/Handbook_of_biostatistic_R/releases/tag/1.2)
 
 下载压缩包中包含手札的pdf版本，网页html版本，它都包含了所有内容，另外提供了一个常用概率公式文档（来自百度文库）。
 
+新增中科院2015考题、数据、以及解答，有相关练习或参考需求的可以点击一下链接地址下载——[生统与R手札+中科院考题解析](https://github.com/ShixiangWang/Handbook_of_biostatistic_R/blob/master/Handbook_of_biostatistics_R.zip)
 
-目录
+![preview1](preview1.png)
+
+（感谢@吴曼提供的R脚本与相关资料）
+
+
+手札目录
 
     Introduction
     参数检验与非参数检验
