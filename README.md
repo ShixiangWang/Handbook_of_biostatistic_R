@@ -1,3 +1,9 @@
+# 生物统计学与R手册
+
+[![GitHub stars](https://img.shields.io/github/stars/ShixiangWang/Handbook_of_biostatistic_R.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/ShixiangWang/Handbook_of_biostatistic_R/stargazers/) [![GitHub forks](https://img.shields.io/github/forks/ShixiangWang/Handbook_of_biostatistic_R.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/ShixiangWang/Handbook_of_biostatistic_R/network/)  [![GitHub watchers](https://img.shields.io/github/watchers/ShixiangWang/Handbook_of_biostatistic_R.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/ShixiangWang/Handbook_of_biostatistic_R/watchers/)
+
+[![Github all releases](https://img.shields.io/github/downloads/ShixiangWang/Handbook_of_biostatistic_R/total.svg)](https://GitHub.com/ShixiangWang/Handbook_of_biostatistic_R/releases/) [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+
 文档介绍
 ===============
 该文档是生物统计学知识与相应R应用的手札，整合了生物统计学老师课件、网络博文资源以及部分个人见解。它既不是全面介绍生物统计学知识及原理、公式推导的专业书籍，也是不介绍R语言编程、操作原理的手册。
